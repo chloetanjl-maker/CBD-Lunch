@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { DealDTO } from "@/lib/types";
-import { CATEGORY_LABELS, type Category } from "@/lib/categories";
 import DeleteDealButton from "@/components/DeleteDealButton";
 
 export default function DealCard({
@@ -11,51 +10,40 @@ export default function DealCard({
   isCheapest: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <h3 className="font-semibold text-zinc-900 dark:text-zinc-50">{deal.name}</h3>
+    <div className="group -mx-2 flex flex-col gap-1.5 rounded-lg px-2 py-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/40">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h3 className="truncate text-[15px] font-medium text-zinc-900 dark:text-zinc-50">{deal.name}</h3>
           <p className="text-sm text-zinc-500">{deal.restaurant}</p>
         </div>
-        <div className="flex flex-col items-end">
-          <span className="text-lg font-bold text-emerald-600">${deal.price.toFixed(2)}</span>
+        <div className="flex shrink-0 items-baseline gap-1.5">
           {isCheapest && (
-            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
-              🏆 cheapest
-            </span>
+            <span className="text-[10px] font-medium uppercase tracking-wide text-emerald-600">Cheapest</span>
           )}
+          <span className="font-medium tabular-nums text-emerald-600">${deal.price.toFixed(2)}</span>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-1.5">
-        <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
-          {CATEGORY_LABELS[deal.category as Category] ?? deal.category}
-        </span>
-      </div>
+      {deal.description && <p className="text-sm text-zinc-600 dark:text-zinc-400">{deal.description}</p>}
 
-      {deal.description && (
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">{deal.description}</p>
-      )}
-
-      <p className="text-xs text-zinc-400">📍 {deal.address}</p>
-
-      {deal.dealDays && <p className="text-xs text-zinc-400">⏰ {deal.dealDays}</p>}
+      <p className="text-xs text-zinc-400">{deal.address}</p>
+      {deal.dealDays && <p className="text-xs text-zinc-400">{deal.dealDays}</p>}
 
       {deal.link && (
         <a
           href={deal.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs font-medium text-emerald-600 hover:underline"
+          className="text-xs text-zinc-400 underline-offset-2 hover:text-zinc-600 hover:underline dark:hover:text-zinc-200"
         >
-          View source ↗
+          Source
         </a>
       )}
 
-      <div className="mt-1 flex items-center gap-3 border-t border-zinc-100 pt-3 text-xs dark:border-zinc-800">
+      <div className="mt-1 flex items-center gap-3 text-xs">
         <Link
           href={`/deals/${deal.id}/edit`}
-          className="font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+          className="font-medium text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
         >
           Edit
         </Link>

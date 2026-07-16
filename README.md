@@ -1,12 +1,13 @@
-# CBD Caifan & Salad Tracker
+# CBD Salad Tracker
 
-Track the cheapest caifan (economy/mixed rice) and salad spots in the
-Singapore CBD, with a list view and a map view.
+Track the cheapest salad spots in the Singapore CBD, browsed on a
+full-screen map.
 
 ## Stack
 
 - [Next.js](https://nextjs.org) (App Router) + TypeScript + Tailwind CSS
 - [Prisma](https://www.prisma.io) + Postgres for storage
+- [Leaflet](https://leafletjs.com) + OpenStreetMap for the map (no API key needed)
 
 ## Getting started
 
@@ -23,7 +24,7 @@ Singapore CBD, with a list view and a map view.
    ```
 3. ```bash
    npx prisma migrate deploy   # applies the schema
-   npm run db:seed             # loads 10 real starter deals (5 caifan, 5 salad)
+   npm run db:seed             # loads 5 real starter salad deals
    npm run dev
    ```
 
@@ -35,22 +36,20 @@ in the project's environment variables.
 
 ## Features
 
-- Browse all deals, sorted cheapest-first by default
-- Filter by category (Caifan / Salad) and search by name/restaurant/address
-- Toggle between list view and a map view (one pin per address, click a pin
-  to see the deals there)
-- Add, edit, and delete deals through a form (`+ Add a deal`), including
+- Full-screen map as the primary view, with a sidebar (search, sort, and a
+  scrollable deal list) beside it on desktop, and a floating list/map toggle
+  on mobile
+- Deals sorted cheapest-first by default; search by name/restaurant/address
+- Add, edit, and delete deals through a form (`Add deal`), including
   optional map coordinates
-
-The map view uses [Leaflet](https://leafletjs.com) with OpenStreetMap tiles —
-no API key needed.
 
 ## Data
 
-Deals are stored in Postgres. The seed script (`prisma/seed.ts`) has 10 real caifan and salad spots
-researched from public sources (Eatbook.sg, TheSmartLocal, food blogs) as of
-July 2026 — prices, hours, and coordinates may have changed since, so verify
-before relying on them, and edit/add entries through the app as you go.
+Deals are stored in Postgres. The seed script (`prisma/seed.ts`) has 5 real
+salad spots researched from public sources (Eatbook.sg, TheSmartLocal, food
+blogs) as of July 2026 — prices, hours, and coordinates may have changed
+since, so verify before relying on them, and edit/add entries through the
+app as you go.
 
 ## Project structure
 
@@ -58,5 +57,5 @@ before relying on them, and edit/add entries through the app as you go.
 - `src/app/deals/new`, `src/app/deals/[id]/edit` — add/edit deal forms
 - `src/app/api/deals` — REST API (GET/POST, PATCH/DELETE by id)
 - `src/components` — `DealsBrowser`, `DealCard`, `DealForm`, `DealsMap`, `DeleteDealButton`
-- `src/lib/categories.ts` — category constants (caifan/salad) and map center
+- `src/lib/constants.ts` — shared constants (map center)
 - `prisma/schema.prisma` — `Deal` model

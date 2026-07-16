@@ -1,10 +1,7 @@
-import { CATEGORIES } from "@/lib/categories";
-
 export type DealInput = {
   name: string;
   restaurant: string;
   address: string;
-  category: "caifan" | "salad";
   price: number;
   description: string | null;
   dealDays: string | null;
@@ -39,10 +36,6 @@ export function parseDealInput(body: unknown): DealInput {
   const name = str(b.name, "name")!;
   const restaurant = str(b.restaurant, "restaurant")!;
   const address = str(b.address, "address")!;
-  const category = str(b.category, "category")!;
-  if (!CATEGORIES.includes(category as (typeof CATEGORIES)[number])) {
-    throw new ValidationError(`category must be one of ${CATEGORIES.join(", ")}`);
-  }
 
   const priceRaw = b.price;
   const price = typeof priceRaw === "number" ? priceRaw : Number(priceRaw);
@@ -63,7 +56,6 @@ export function parseDealInput(body: unknown): DealInput {
     name,
     restaurant,
     address,
-    category: category as "caifan" | "salad",
     price,
     description: str(b.description, "description", { required: false }),
     dealDays: str(b.dealDays, "dealDays", { required: false }),
