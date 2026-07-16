@@ -20,8 +20,8 @@ function pinIcon(count: number) {
     html: `<div style="
       display:flex;align-items:center;justify-content:center;
       width:32px;height:32px;border-radius:9999px;
-      background:#059669;color:white;font:700 13px system-ui, sans-serif;
-      border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.35);
+      background:#059669;color:white;font:600 13px system-ui, sans-serif;
+      border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.25);
     ">${count}</div>`,
     iconSize: [32, 32],
     iconAnchor: [16, 16],
@@ -62,17 +62,15 @@ export default function DealsMap({ deals }: { deals: DealDTO[] }) {
           <Marker key={key} position={coords} icon={pinIcon(groupDeals.length)}>
             <Popup>
               <div className="max-w-[16rem] text-sm">
-                <p className="mb-1.5 font-semibold text-zinc-900">{groupDeals[0].restaurant}</p>
-                <p className="mb-1.5 text-xs text-zinc-500">{groupDeals[0].address}</p>
-                <ul className="flex max-h-48 flex-col gap-2 overflow-y-auto">
+                <p className="mb-1 font-medium text-zinc-900">{groupDeals[0].restaurant}</p>
+                <p className="mb-2 text-xs text-zinc-400">{groupDeals[0].address}</p>
+                <ul className="flex max-h-48 flex-col divide-y divide-zinc-100 overflow-y-auto">
                   {groupDeals.map((deal) => (
-                    <li key={deal.id} className="border-t border-zinc-100 pt-1.5 first:border-t-0 first:pt-0">
-                      <div className="flex items-baseline justify-between gap-2">
-                        <span className="font-medium text-zinc-800">{deal.name}</span>
-                        <span className="whitespace-nowrap font-bold text-emerald-600">
-                          ${deal.price.toFixed(2)}
-                        </span>
-                      </div>
+                    <li key={deal.id} className="flex items-baseline justify-between gap-2 py-1.5 first:pt-0">
+                      <span className="text-zinc-700">{deal.name}</span>
+                      <span className="whitespace-nowrap font-medium tabular-nums text-emerald-600">
+                        ${deal.price.toFixed(2)}
+                      </span>
                     </li>
                   ))}
                 </ul>

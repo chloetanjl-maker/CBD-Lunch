@@ -20,6 +20,9 @@ type CategoryFilter = "all" | Category;
 type SortOrder = "price-asc" | "price-desc" | "name-asc";
 type MobilePane = "list" | "map";
 
+const fieldClass =
+  "w-full rounded-lg border-none bg-zinc-100 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none ring-0 focus:ring-2 focus:ring-emerald-500/40 dark:bg-zinc-800 dark:text-zinc-100";
+
 export default function DealsBrowser({ deals }: { deals: DealDTO[] }) {
   const [mobilePane, setMobilePane] = useState<MobilePane>("map");
   const [category, setCategory] = useState<CategoryFilter>("all");
@@ -61,28 +64,28 @@ export default function DealsBrowser({ deals }: { deals: DealDTO[] }) {
       <div
         className={`${
           mobilePane === "list" ? "flex" : "hidden"
-        } h-full min-h-0 w-full flex-col border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 md:flex md:w-[380px] md:shrink-0 md:border-r lg:w-[420px]`}
+        } h-full min-h-0 w-full flex-col bg-white dark:bg-zinc-900 md:flex md:w-[380px] md:shrink-0 md:border-r md:border-zinc-100 lg:w-[420px] dark:md:border-zinc-800`}
       >
-        <div className="flex shrink-0 flex-col gap-3 border-b border-zinc-100 p-4 dark:border-zinc-800">
-          <div className="flex flex-wrap gap-2">
+        <div className="flex shrink-0 flex-col gap-3 p-4">
+          <div className="flex gap-1 rounded-full bg-zinc-100 p-1 dark:bg-zinc-800">
             <button
               onClick={() => setCategory("all")}
-              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors ${
+              className={`flex-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
                 category === "all"
-                  ? "bg-emerald-600 text-white"
-                  : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+                  ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-50"
+                  : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
               }`}
             >
-              All deals
+              All
             </button>
             {CATEGORIES.map((c) => (
               <button
                 key={c}
                 onClick={() => setCategory(c)}
-                className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors ${
+                className={`flex-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
                   category === c
-                    ? "bg-emerald-600 text-white"
-                    : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+                    ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-50"
+                    : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
                 }`}
               >
                 {CATEGORY_LABELS[c]}
@@ -92,45 +95,35 @@ export default function DealsBrowser({ deals }: { deals: DealDTO[] }) {
 
           <input
             type="text"
-            placeholder="Search by name, restaurant, or address..."
+            placeholder="Search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-emerald-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            className={fieldClass}
           />
 
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as SortOrder)}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-emerald-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-          >
+          <select value={sort} onChange={(e) => setSort(e.target.value as SortOrder)} className={fieldClass}>
             <option value="price-asc">Price: low to high</option>
             <option value="price-desc">Price: high to low</option>
             <option value="name-asc">Name: A to Z</option>
           </select>
 
-          <p className="text-xs text-zinc-500">
-            {filtered.length} deal{filtered.length === 1 ? "" : "s"} found
+          <p className="text-xs text-zinc-400">
+            {filtered.length} deal{filtered.length === 1 ? "" : "s"}
             {cheapest && (
               <>
                 {" "}
-                &middot; cheapest is{" "}
-                <span className="font-semibold text-emerald-600">${cheapest.price.toFixed(2)}</span> at{" "}
-                {cheapest.restaurant}
+                &middot; cheapest ${cheapest.price.toFixed(2)} at {cheapest.restaurant}
               </>
             )}
-            {unmappedCount > 0 && (
-              <> &middot; {unmappedCount} not shown on map (no coordinates)</>
-            )}
+            {unmappedCount > 0 && <> &middot; {unmappedCount} not on map</>}
           </p>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-3">
+        <div className="flex-1 overflow-y-auto px-4 pb-4">
           {filtered.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-zinc-300 p-8 text-center text-sm text-zinc-400 dark:border-zinc-700">
-              No deals match your filters yet.
-            </div>
+            <div className="rounded-lg p-8 text-center text-sm text-zinc-400">No deals match your filters yet.</div>
           ) : (
-            <div className="flex flex-col gap-3">
+            <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
               {filtered.map((deal) => (
                 <DealCard key={deal.id} deal={deal} isCheapest={deal.id === cheapest?.id} />
               ))}
@@ -145,16 +138,18 @@ export default function DealsBrowser({ deals }: { deals: DealDTO[] }) {
       </div>
 
       {/* Mobile list/map toggle */}
-      <div className="fixed bottom-5 left-1/2 z-[1100] flex -translate-x-1/2 gap-1 rounded-full bg-zinc-900/95 p-1 shadow-lg backdrop-blur md:hidden">
+      <div className="fixed bottom-5 left-1/2 z-[1100] flex -translate-x-1/2 gap-1 rounded-full bg-white/90 p-1 shadow-lg backdrop-blur-md dark:bg-zinc-900/90 md:hidden">
         {(["map", "list"] as MobilePane[]).map((pane) => (
           <button
             key={pane}
             onClick={() => setMobilePane(pane)}
-            className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-              mobilePane === pane ? "bg-white text-zinc-900" : "text-zinc-300"
+            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+              mobilePane === pane
+                ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                : "text-zinc-500 dark:text-zinc-400"
             }`}
           >
-            {pane === "map" ? `🗺️ Map` : `☰ List (${filtered.length})`}
+            {pane === "map" ? "Map" : `List (${filtered.length})`}
           </button>
         ))}
       </div>

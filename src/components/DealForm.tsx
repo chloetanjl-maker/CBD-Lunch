@@ -9,6 +9,10 @@ type Props = {
   deal?: DealDTO;
 };
 
+const inputClass =
+  "w-full rounded-lg border-none bg-zinc-100 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none ring-0 focus:ring-2 focus:ring-emerald-500/40 dark:bg-zinc-800 dark:text-zinc-100";
+const labelClass = "text-xs font-medium text-zinc-500";
+
 export default function DealForm({ deal }: Props) {
   const router = useRouter();
   const isEdit = Boolean(deal);
@@ -65,10 +69,6 @@ export default function DealForm({ deal }: Props) {
     }
   }
 
-  const inputClass =
-    "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-emerald-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100";
-  const labelClass = "text-sm font-medium text-zinc-700 dark:text-zinc-300";
-
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       {error && (
@@ -77,16 +77,16 @@ export default function DealForm({ deal }: Props) {
         </div>
       )}
 
-      <div className="flex gap-2">
+      <div className="flex gap-1 rounded-full bg-zinc-100 p-1 dark:bg-zinc-800">
         {CATEGORIES.map((c) => (
           <button
             key={c}
             type="button"
             onClick={() => setCategory(c)}
-            className={`flex-1 rounded-lg border px-4 py-2 text-sm font-semibold transition-colors ${
+            className={`flex-1 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
               category === c
-                ? "border-emerald-600 bg-emerald-600 text-white"
-                : "border-zinc-300 bg-white text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-50"
+                : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
             }`}
           >
             {CATEGORY_LABELS[c]}
@@ -94,7 +94,7 @@ export default function DealForm({ deal }: Props) {
         ))}
       </div>
 
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1.5">
         <span className={labelClass}>Deal name</span>
         <input
           className={inputClass}
@@ -105,7 +105,7 @@ export default function DealForm({ deal }: Props) {
         />
       </label>
 
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1.5">
         <span className={labelClass}>Restaurant / stall</span>
         <input
           className={inputClass}
@@ -116,7 +116,7 @@ export default function DealForm({ deal }: Props) {
         />
       </label>
 
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1.5">
         <span className={labelClass}>Address</span>
         <input
           className={inputClass}
@@ -127,7 +127,7 @@ export default function DealForm({ deal }: Props) {
         />
       </label>
 
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1.5">
         <span className={labelClass}>Price (SGD)</span>
         <input
           className={inputClass}
@@ -141,7 +141,7 @@ export default function DealForm({ deal }: Props) {
         />
       </label>
 
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1.5">
         <span className={labelClass}>Description (optional)</span>
         <textarea
           className={inputClass}
@@ -153,7 +153,7 @@ export default function DealForm({ deal }: Props) {
       </label>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1.5">
           <span className={labelClass}>Deal days / hours (optional)</span>
           <input
             className={inputClass}
@@ -163,7 +163,7 @@ export default function DealForm({ deal }: Props) {
           />
         </label>
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1.5">
           <span className={labelClass}>Source link (optional)</span>
           <input
             className={inputClass}
@@ -174,10 +174,10 @@ export default function DealForm({ deal }: Props) {
         </label>
       </div>
 
-      <div className="flex flex-col gap-2 rounded-lg border border-dashed border-zinc-300 p-3 dark:border-zinc-700">
+      <div className="flex flex-col gap-2 rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800/50">
         <span className={labelClass}>Map location (optional)</span>
-        <p className="text-xs text-zinc-500">
-          Right-click the spot on Google Maps and copy the coordinates to place it on the map view.
+        <p className="text-xs text-zinc-400">
+          Look up the coordinates on Google Maps or OpenStreetMap and paste them here to place a pin.
           Leave blank to skip.
         </p>
         <div className="grid grid-cols-2 gap-3">
@@ -200,18 +200,18 @@ export default function DealForm({ deal }: Props) {
         </div>
       </div>
 
-      <div className="flex gap-3 pt-2">
+      <div className="flex items-center gap-4 pt-2">
         <button
           type="submit"
           disabled={submitting}
-          className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
+          className="rounded-full bg-zinc-900 px-5 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-50 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
         >
           {submitting ? "Saving..." : isEdit ? "Save changes" : "Add deal"}
         </button>
         <button
           type="button"
           onClick={() => router.back()}
-          className="rounded-full border border-zinc-300 px-5 py-2 text-sm font-semibold text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          className="text-sm font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
         >
           Cancel
         </button>

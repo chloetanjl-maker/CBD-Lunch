@@ -26,7 +26,7 @@ export default function DeleteDealButton({ id, name }: { id: number; name: strin
     <button
       onClick={handleDelete}
       disabled={pending}
-      className="font-medium text-red-500 hover:text-red-700 disabled:opacity-50"
+      className="font-medium text-zinc-400 hover:text-red-600 disabled:opacity-50 dark:hover:text-red-400"
     >
       {pending ? "Deleting..." : "Delete"}
     </button>
