@@ -1,17 +1,32 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { GoogleMap, InfoWindowF, MarkerF, useJsApiLoader } from "@react-google-maps/api";
+import "leaflet/dist/leaflet.css";
+import { useMemo } from "react";
+import L from "leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import type { DealDTO } from "@/lib/types";
 import { CBD_CENTER } from "@/lib/categories";
-
-const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 const containerStyle = { width: "100%", height: "100%" };
 
 function groupKey(deal: DealDTO) {
   // Round to ~11m precision so deals at the same address share a pin.
   return `${deal.lat!.toFixed(4)},${deal.lng!.toFixed(4)}`;
+}
+
+function pinIcon(count: number) {
+  return L.divIcon({
+    className: "",
+    html: `<div style="
+      display:flex;align-items:center;justify-content:center;
+      width:32px;height:32px;border-radius:9999px;
+      background:#059669;color:white;font:700 13px system-ui, sans-serif;
+      border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.35);
+    ">${count}</div>`,
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -14],
+  });
 }
 
 export default function DealsMap({
@@ -21,13 +36,6 @@ export default function DealsMap({
   deals: DealDTO[];
   onSwitchToList: () => void;
 }) {
-  const [activeKey, setActiveKey] = useState<string | null>(null);
-
-  const { isLoaded, loadError } = useJsApiLoader({
-    id: "cbd-lunch-deals-map",
-    googleMapsApiKey: GOOGLE_MAPS_API_KEY ?? "",
-  });
-
   const groups = useMemo(() => {
     const byKey = new Map<string, DealDTO[]>();
     for (const deal of deals) {
@@ -45,74 +53,45 @@ export default function DealsMap({
 
   const unmappedCount = deals.length - [...groups.values()].reduce((n, l) => n + l.length, 0);
 
-  if (!GOOGLE_MAPS_API_KEY) {
-    return (
-      <div className="flex h-[32rem] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-zinc-300 p-8 text-center text-sm text-zinc-500 dark:border-zinc-700">
-        <p className="font-semibold text-zinc-700 dark:text-zinc-300">Map view needs a Google Maps API key</p>
-        <p className="max-w-sm">
-          Add <code className="rounded bg-zinc-100 px-1 py-0.5 dark:bg-zinc-800">NEXT_PUBLIC_GOOGLE_MAPS_API_KEY</code>{" "}
-          to your <code className="rounded bg-zinc-100 px-1 py-0.5 dark:bg-zinc-800">.env</code> file and restart the
-          dev server to enable it.
-        </p>
-      </div>
-    );
-  }
-
-  if (loadError) {
-    return (
-      <div className="flex h-[32rem] items-center justify-center rounded-2xl border border-dashed border-red-300 p-8 text-center text-sm text-red-500">
-        Failed to load Google Maps. Check that your API key is valid and has the Maps JavaScript API enabled.
-      </div>
-    );
-  }
-
-  if (!isLoaded) {
-    return (
-      <div className="flex h-[32rem] items-center justify-center rounded-2xl border border-zinc-200 text-sm text-zinc-400 dark:border-zinc-800">
-        Loading map...
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col gap-2">
       <div className="h-[32rem] overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800">
-        <GoogleMap mapContainerStyle={containerStyle} center={CBD_CENTER} zoom={15}>
+        <MapContainer
+          center={[CBD_CENTER.lat, CBD_CENTER.lng]}
+          zoom={15}
+          maxZoom={19}
+          style={containerStyle}
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
           {[...groups.entries()].map(([key, groupDeals]) => {
-            const coords = { lat: groupDeals[0].lat!, lng: groupDeals[0].lng! };
-            const cheapest = groupDeals[0];
+            const coords: [number, number] = [groupDeals[0].lat!, groupDeals[0].lng!];
             return (
-              <MarkerF
-                key={key}
-                position={coords}
-                label={{ text: String(groupDeals.length), color: "white", fontWeight: "bold" }}
-                title={`${cheapest.restaurant} — from $${cheapest.price.toFixed(2)}`}
-                onClick={() => setActiveKey(key)}
-              >
-                {activeKey === key && (
-                  <InfoWindowF position={coords} onCloseClick={() => setActiveKey(null)}>
-                    <div className="max-w-[16rem] text-sm">
-                      <p className="mb-1.5 font-semibold text-zinc-900">{groupDeals[0].restaurant}</p>
-                      <p className="mb-1.5 text-xs text-zinc-500">{groupDeals[0].address}</p>
-                      <ul className="flex max-h-48 flex-col gap-2 overflow-y-auto">
-                        {groupDeals.map((deal) => (
-                          <li key={deal.id} className="border-t border-zinc-100 pt-1.5 first:border-t-0 first:pt-0">
-                            <div className="flex items-baseline justify-between gap-2">
-                              <span className="font-medium text-zinc-800">{deal.name}</span>
-                              <span className="whitespace-nowrap font-bold text-emerald-600">
-                                ${deal.price.toFixed(2)}
-                              </span>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </InfoWindowF>
-                )}
-              </MarkerF>
+              <Marker key={key} position={coords} icon={pinIcon(groupDeals.length)}>
+                <Popup>
+                  <div className="max-w-[16rem] text-sm">
+                    <p className="mb-1.5 font-semibold text-zinc-900">{groupDeals[0].restaurant}</p>
+                    <p className="mb-1.5 text-xs text-zinc-500">{groupDeals[0].address}</p>
+                    <ul className="flex max-h-48 flex-col gap-2 overflow-y-auto">
+                      {groupDeals.map((deal) => (
+                        <li key={deal.id} className="border-t border-zinc-100 pt-1.5 first:border-t-0 first:pt-0">
+                          <div className="flex items-baseline justify-between gap-2">
+                            <span className="font-medium text-zinc-800">{deal.name}</span>
+                            <span className="whitespace-nowrap font-bold text-emerald-600">
+                              ${deal.price.toFixed(2)}
+                            </span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </Popup>
+              </Marker>
             );
           })}
-        </GoogleMap>
+        </MapContainer>
       </div>
       {unmappedCount > 0 && (
         <p className="text-xs text-zinc-400">

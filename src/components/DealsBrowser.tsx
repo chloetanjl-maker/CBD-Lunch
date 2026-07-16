@@ -1,10 +1,20 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/categories";
 import type { DealDTO } from "@/lib/types";
 import DealCard from "@/components/DealCard";
-import DealsMap from "@/components/DealsMap";
+
+// Leaflet touches `window` at module load, so it can't be server-rendered.
+const DealsMap = dynamic(() => import("@/components/DealsMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-[32rem] items-center justify-center rounded-2xl border border-zinc-200 text-sm text-zinc-400 dark:border-zinc-800">
+      Loading map...
+    </div>
+  ),
+});
 
 type CategoryFilter = "all" | Category;
 type SortOrder = "price-asc" | "price-desc" | "name-asc";

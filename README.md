@@ -42,14 +42,8 @@ in the project's environment variables.
 - Add, edit, and delete deals through a form (`+ Add a deal`), including
   optional map coordinates
 
-### Map view setup
-
-The map view needs a Google Maps API key with the "Maps JavaScript API"
-enabled. Create one at
-[console.cloud.google.com/google/maps-apis](https://console.cloud.google.com/google/maps-apis),
-then set `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in `.env` and restart the dev
-server. Without a key, the map view shows a setup message instead of a
-broken map — everything else still works.
+The map view uses [Leaflet](https://leafletjs.com) with OpenStreetMap tiles —
+no API key needed.
 
 ## Data
 
