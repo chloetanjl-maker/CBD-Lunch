@@ -1,0 +1,30 @@
+// Prisma schema for CBD Caifan & Salad tracker
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// SQLite has no native enum type, so `category` is a plain string
+// validated against CATEGORIES in src/lib/categories.ts.
+model Deal {
+  id          Int      @id @default(autoincrement())
+  name        String
+  restaurant  String
+  address     String
+  category    String // "caifan" | "salad"
+  price       Float
+  description String?
+  dealDays    String? // e.g. "Mon-Fri, 11:30am-2pm"
+  link        String?
+  lat         Float?
+  lng         Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+}
