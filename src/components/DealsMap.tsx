@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import L from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import type { DealDTO } from "@/lib/types";
-import { CBD_CENTER } from "@/lib/categories";
+import { CBD_CENTER } from "@/lib/constants";
 
 const containerStyle = { width: "100%", height: "100%" };
 

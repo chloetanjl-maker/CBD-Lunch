@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { DealDTO } from "@/lib/types";
-import { CATEGORY_LABELS, type Category } from "@/lib/categories";
 import DeleteDealButton from "@/components/DeleteDealButton";
 
 export default function DealCard({
@@ -24,10 +23,6 @@ export default function DealCard({
           <span className="font-medium tabular-nums text-emerald-600">${deal.price.toFixed(2)}</span>
         </div>
       </div>
-
-      <p className="text-[11px] font-medium uppercase tracking-wide text-zinc-400">
-        {CATEGORY_LABELS[deal.category as Category] ?? deal.category}
-      </p>
 
       {deal.description && <p className="text-sm text-zinc-600 dark:text-zinc-400">{deal.description}</p>}
 

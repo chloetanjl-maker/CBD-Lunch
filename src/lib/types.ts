@@ -3,7 +3,6 @@ export type DealDTO = {
   name: string;
   restaurant: string;
   address: string;
-  category: string;
   price: number;
   description: string | null;
   dealDays: string | null;

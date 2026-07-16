@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/categories";
 import type { DealDTO } from "@/lib/types";
 import DealCard from "@/components/DealCard";
 
@@ -16,7 +15,6 @@ const DealsMap = dynamic(() => import("@/components/DealsMap"), {
   ),
 });
 
-type CategoryFilter = "all" | Category;
 type SortOrder = "price-asc" | "price-desc" | "name-asc";
 type MobilePane = "list" | "map";
 
@@ -25,16 +23,12 @@ const fieldClass =
 
 export default function DealsBrowser({ deals }: { deals: DealDTO[] }) {
   const [mobilePane, setMobilePane] = useState<MobilePane>("map");
-  const [category, setCategory] = useState<CategoryFilter>("all");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOrder>("price-asc");
 
   const filtered = useMemo(() => {
     let result = deals;
 
-    if (category !== "all") {
-      result = result.filter((d) => d.category === category);
-    }
     if (search.trim()) {
       const q = search.trim().toLowerCase();
       result = result.filter(
@@ -53,7 +47,7 @@ export default function DealsBrowser({ deals }: { deals: DealDTO[] }) {
       return a.name.localeCompare(b.name);
     });
     return sorted;
-  }, [deals, category, search, sort]);
+  }, [deals, search, sort]);
 
   const cheapest = filtered[0];
   const unmappedCount = filtered.filter((d) => d.lat == null || d.lng == null).length;
@@ -67,32 +61,6 @@ export default function DealsBrowser({ deals }: { deals: DealDTO[] }) {
         } h-full min-h-0 w-full flex-col bg-white dark:bg-zinc-900 md:flex md:w-[380px] md:shrink-0 md:border-r md:border-zinc-100 lg:w-[420px] dark:md:border-zinc-800`}
       >
         <div className="flex shrink-0 flex-col gap-3 p-4">
-          <div className="flex gap-1 rounded-full bg-zinc-100 p-1 dark:bg-zinc-800">
-            <button
-              onClick={() => setCategory("all")}
-              className={`flex-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-                category === "all"
-                  ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-50"
-                  : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-              }`}
-            >
-              All
-            </button>
-            {CATEGORIES.map((c) => (
-              <button
-                key={c}
-                onClick={() => setCategory(c)}
-                className={`flex-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-                  category === c
-                    ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-50"
-                    : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-                }`}
-              >
-                {CATEGORY_LABELS[c]}
-              </button>
-            ))}
-          </div>
-
           <input
             type="text"
             placeholder="Search"

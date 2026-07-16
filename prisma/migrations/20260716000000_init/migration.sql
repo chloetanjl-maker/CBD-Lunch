@@ -7,7 +7,6 @@ CREATE TABLE "Deal" (
     "name" TEXT NOT NULL,
     "restaurant" TEXT NOT NULL,
     "address" TEXT NOT NULL,
-    "category" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "description" TEXT,
     "dealDays" TEXT,
@@ -19,7 +18,4 @@ CREATE TABLE "Deal" (
 
     CONSTRAINT "Deal_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE INDEX "Deal_category_idx" ON "Deal"("category");
 

@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/categories";
 import type { DealDTO } from "@/lib/types";
 
 type Props = {
@@ -17,7 +16,6 @@ export default function DealForm({ deal }: Props) {
   const router = useRouter();
   const isEdit = Boolean(deal);
 
-  const [category, setCategory] = useState<Category>((deal?.category as Category) ?? "caifan");
   const [name, setName] = useState(deal?.name ?? "");
   const [restaurant, setRestaurant] = useState(deal?.restaurant ?? "");
   const [address, setAddress] = useState(deal?.address ?? "");
@@ -40,7 +38,6 @@ export default function DealForm({ deal }: Props) {
       name,
       restaurant,
       address,
-      category,
       price: Number(price),
       description: description || null,
       dealDays: dealDays || null,
@@ -77,30 +74,13 @@ export default function DealForm({ deal }: Props) {
         </div>
       )}
 
-      <div className="flex gap-1 rounded-full bg-zinc-100 p-1 dark:bg-zinc-800">
-        {CATEGORIES.map((c) => (
-          <button
-            key={c}
-            type="button"
-            onClick={() => setCategory(c)}
-            className={`flex-1 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-              category === c
-                ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-50"
-                : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-            }`}
-          >
-            {CATEGORY_LABELS[c]}
-          </button>
-        ))}
-      </div>
-
       <label className="flex flex-col gap-1.5">
         <span className={labelClass}>Deal name</span>
         <input
           className={inputClass}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder={category === "caifan" ? "e.g. 1 Meat + 2 Veg" : "e.g. Build-Your-Own Bowl"}
+          placeholder="e.g. Build-Your-Own Bowl"
           required
         />
       </label>
@@ -111,7 +91,7 @@ export default function DealForm({ deal }: Props) {
           className={inputClass}
           value={restaurant}
           onChange={(e) => setRestaurant(e.target.value)}
-          placeholder="e.g. Zhi Sheng Cooked Food"
+          placeholder="e.g. Green Bites Salad"
           required
         />
       </label>
@@ -122,7 +102,7 @@ export default function DealForm({ deal }: Props) {
           className={inputClass}
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          placeholder="e.g. Amoy Street Food Centre, 7 Maxwell Road, #02-108, Singapore 069111"
+          placeholder="e.g. 50 Market Street, Golden Shoe Car Park, #03-20, Singapore 048940"
           required
         />
       </label>

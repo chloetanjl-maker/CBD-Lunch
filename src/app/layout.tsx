@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CBD Caifan & Salad Tracker",
-  description: "Track the cheapest caifan and salad spots in the CBD.",
+  title: "CBD Salad Tracker",
+  description: "Track the cheapest salad spots in the CBD.",
 };
 
 export default function RootLayout({
@@ -32,7 +32,7 @@ export default function RootLayout({
         <header className="z-[1200] shrink-0 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
           <div className="flex items-center justify-between px-4 py-3 sm:px-6">
             <Link href="/" className="text-[15px] font-medium text-zinc-900 dark:text-zinc-50">
-              Caifan &amp; Salad
+              Salad
             </Link>
             <Link
               href="/deals/new"

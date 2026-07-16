@@ -1,4 +1,4 @@
-// Prisma schema for CBD Caifan & Salad tracker
+// Prisma schema for CBD Salad tracker
 
 generator client {
   provider = "prisma-client-js"
@@ -9,15 +9,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Prisma enums work on Postgres, but `category` stays a plain string
-// validated against CATEGORIES in src/lib/categories.ts to avoid a
-// migration every time a category is added.
 model Deal {
   id          Int      @id @default(autoincrement())
   name        String
   restaurant  String
   address     String
-  category    String // "caifan" | "salad"
   price       Float
   description String?
   dealDays    String? // e.g. "Mon-Fri, 11:30am-2pm"
@@ -26,6 +22,4 @@ model Deal {
   lng         Float?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  @@index([category])
 }
