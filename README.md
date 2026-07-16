@@ -1,0 +1,62 @@
+# CBD Caifan & Salad Tracker
+
+Track the cheapest caifan (economy/mixed rice) and salad spots in the
+Singapore CBD, with a list view and a map view.
+
+## Stack
+
+- [Next.js](https://nextjs.org) (App Router) + TypeScript + Tailwind CSS
+- [Prisma](https://www.prisma.io) + Postgres for storage
+
+## Getting started
+
+1. Get a Postgres database. Easiest options:
+   - **Deploying on Vercel**: open your project → **Storage** tab → **Create
+     Database** → choose Neon/Postgres. Vercel injects `DATABASE_URL`
+     automatically — copy the same value into your local `.env` for step 3.
+   - **Local only**: any Postgres works, e.g. a free
+     [Neon](https://neon.tech) or [Supabase](https://supabase.com) project,
+     or `docker run -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres`.
+2. ```bash
+   npm install
+   cp .env.example .env   # then paste your DATABASE_URL in
+   ```
+3. ```bash
+   npx prisma migrate deploy   # applies the schema
+   npm run db:seed             # loads 10 real starter deals (5 caifan, 5 salad)
+   npm run dev
+   ```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+On Vercel, migrations run automatically on every deploy (`npm run build` runs
+`prisma migrate deploy` before `next build`) as long as `DATABASE_URL` is set
+in the project's environment variables.
+
+## Features
+
+- Browse all deals, sorted cheapest-first by default
+- Filter by category (Caifan / Salad) and search by name/restaurant/address
+- Toggle between list view and a map view (one pin per address, click a pin
+  to see the deals there)
+- Add, edit, and delete deals through a form (`+ Add a deal`), including
+  optional map coordinates
+
+The map view uses [Leaflet](https://leafletjs.com) with OpenStreetMap tiles —
+no API key needed.
+
+## Data
+
+Deals are stored in Postgres. The seed script (`prisma/seed.ts`) has 10 real caifan and salad spots
+researched from public sources (Eatbook.sg, TheSmartLocal, food blogs) as of
+July 2026 — prices, hours, and coordinates may have changed since, so verify
+before relying on them, and edit/add entries through the app as you go.
+
+## Project structure
+
+- `src/app/page.tsx` — homepage, fetches deals and renders `DealsBrowser`
+- `src/app/deals/new`, `src/app/deals/[id]/edit` — add/edit deal forms
+- `src/app/api/deals` — REST API (GET/POST, PATCH/DELETE by id)
+- `src/components` — `DealsBrowser`, `DealCard`, `DealForm`, `DealsMap`, `DeleteDealButton`
+- `src/lib/categories.ts` — category constants (caifan/salad) and map center
+- `prisma/schema.prisma` — `Deal` model
