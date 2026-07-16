@@ -6,19 +6,32 @@ Singapore CBD, with a list view and a map view.
 ## Stack
 
 - [Next.js](https://nextjs.org) (App Router) + TypeScript + Tailwind CSS
-- [Prisma](https://www.prisma.io) + SQLite for storage
+- [Prisma](https://www.prisma.io) + Postgres for storage
 
 ## Getting started
 
-```bash
-npm install
-cp .env.example .env
-npx prisma migrate dev   # creates prisma/dev.db and applies the schema
-npm run db:seed          # loads 10 real starter deals (5 caifan, 5 salad)
-npm run dev
-```
+1. Get a Postgres database. Easiest options:
+   - **Deploying on Vercel**: open your project → **Storage** tab → **Create
+     Database** → choose Neon/Postgres. Vercel injects `DATABASE_URL`
+     automatically — copy the same value into your local `.env` for step 3.
+   - **Local only**: any Postgres works, e.g. a free
+     [Neon](https://neon.tech) or [Supabase](https://supabase.com) project,
+     or `docker run -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres`.
+2. ```bash
+   npm install
+   cp .env.example .env   # then paste your DATABASE_URL in
+   ```
+3. ```bash
+   npx prisma migrate deploy   # applies the schema
+   npm run db:seed             # loads 10 real starter deals (5 caifan, 5 salad)
+   npm run dev
+   ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+On Vercel, migrations run automatically on every deploy (`npm run build` runs
+`prisma migrate deploy` before `next build`) as long as `DATABASE_URL` is set
+in the project's environment variables.
 
 ## Features
 
@@ -40,8 +53,7 @@ broken map — everything else still works.
 
 ## Data
 
-Deals are stored in a local SQLite database (`prisma/dev.db`, gitignored).
-The seed script (`prisma/seed.ts`) has 10 real caifan and salad spots
+Deals are stored in Postgres. The seed script (`prisma/seed.ts`) has 10 real caifan and salad spots
 researched from public sources (Eatbook.sg, TheSmartLocal, food blogs) as of
 July 2026 — prices, hours, and coordinates may have changed since, so verify
 before relying on them, and edit/add entries through the app as you go.

@@ -5,12 +5,13 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// SQLite has no native enum type, so `category` is a plain string
-// validated against CATEGORIES in src/lib/categories.ts.
+// Prisma enums work on Postgres, but `category` stays a plain string
+// validated against CATEGORIES in src/lib/categories.ts to avoid a
+// migration every time a category is added.
 model Deal {
   id          Int      @id @default(autoincrement())
   name        String
