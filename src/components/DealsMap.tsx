@@ -29,13 +29,7 @@ function pinIcon(count: number) {
   });
 }
 
-export default function DealsMap({
-  deals,
-  onSwitchToList,
-}: {
-  deals: DealDTO[];
-  onSwitchToList: () => void;
-}) {
+export default function DealsMap({ deals }: { deals: DealDTO[] }) {
   const groups = useMemo(() => {
     const byKey = new Map<string, DealDTO[]>();
     for (const deal of deals) {
@@ -51,57 +45,42 @@ export default function DealsMap({
     return byKey;
   }, [deals]);
 
-  const unmappedCount = deals.length - [...groups.values()].reduce((n, l) => n + l.length, 0);
-
   return (
-    <div className="flex flex-col gap-2">
-      <div className="h-[32rem] overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800">
-        <MapContainer
-          center={[CBD_CENTER.lat, CBD_CENTER.lng]}
-          zoom={15}
-          maxZoom={19}
-          style={containerStyle}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {[...groups.entries()].map(([key, groupDeals]) => {
-            const coords: [number, number] = [groupDeals[0].lat!, groupDeals[0].lng!];
-            return (
-              <Marker key={key} position={coords} icon={pinIcon(groupDeals.length)}>
-                <Popup>
-                  <div className="max-w-[16rem] text-sm">
-                    <p className="mb-1.5 font-semibold text-zinc-900">{groupDeals[0].restaurant}</p>
-                    <p className="mb-1.5 text-xs text-zinc-500">{groupDeals[0].address}</p>
-                    <ul className="flex max-h-48 flex-col gap-2 overflow-y-auto">
-                      {groupDeals.map((deal) => (
-                        <li key={deal.id} className="border-t border-zinc-100 pt-1.5 first:border-t-0 first:pt-0">
-                          <div className="flex items-baseline justify-between gap-2">
-                            <span className="font-medium text-zinc-800">{deal.name}</span>
-                            <span className="whitespace-nowrap font-bold text-emerald-600">
-                              ${deal.price.toFixed(2)}
-                            </span>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </Popup>
-              </Marker>
-            );
-          })}
-        </MapContainer>
-      </div>
-      {unmappedCount > 0 && (
-        <p className="text-xs text-zinc-400">
-          {unmappedCount} deal{unmappedCount === 1 ? "" : "s"} not shown on the map (no coordinates set).{" "}
-          <button type="button" onClick={onSwitchToList} className="underline">
-            Switch to list view
-          </button>{" "}
-          to see them.
-        </p>
-      )}
-    </div>
+    <MapContainer
+      center={[CBD_CENTER.lat, CBD_CENTER.lng]}
+      zoom={15}
+      maxZoom={19}
+      style={containerStyle}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      {[...groups.entries()].map(([key, groupDeals]) => {
+        const coords: [number, number] = [groupDeals[0].lat!, groupDeals[0].lng!];
+        return (
+          <Marker key={key} position={coords} icon={pinIcon(groupDeals.length)}>
+            <Popup>
+              <div className="max-w-[16rem] text-sm">
+                <p className="mb-1.5 font-semibold text-zinc-900">{groupDeals[0].restaurant}</p>
+                <p className="mb-1.5 text-xs text-zinc-500">{groupDeals[0].address}</p>
+                <ul className="flex max-h-48 flex-col gap-2 overflow-y-auto">
+                  {groupDeals.map((deal) => (
+                    <li key={deal.id} className="border-t border-zinc-100 pt-1.5 first:border-t-0 first:pt-0">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="font-medium text-zinc-800">{deal.name}</span>
+                        <span className="whitespace-nowrap font-bold text-emerald-600">
+                          ${deal.price.toFixed(2)}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Popup>
+          </Marker>
+        );
+      })}
+    </MapContainer>
   );
 }

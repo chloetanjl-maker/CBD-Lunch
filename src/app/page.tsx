@@ -7,7 +7,7 @@ export default async function Home() {
   const deals = await prisma.deal.findMany({ orderBy: { price: "asc" } });
 
   return (
-    <div className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6">
+    <div className="h-full min-h-0 flex-1">
       <DealsBrowser
         deals={deals.map((d) => ({ ...d, createdAt: d.createdAt.toISOString(), updatedAt: d.updatedAt.toISOString() }))}
       />

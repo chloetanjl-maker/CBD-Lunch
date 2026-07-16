@@ -28,11 +28,11 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-50 dark:bg-zinc-950">
-        <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-          <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
+      <body className="flex h-dvh flex-col overflow-hidden bg-zinc-50 dark:bg-zinc-950">
+        <header className="z-[1200] shrink-0 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <div className="flex items-center justify-between px-4 py-3 sm:px-6">
             <Link href="/" className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-zinc-900 dark:text-zinc-50">
+              <span className="text-lg font-bold text-zinc-900 dark:text-zinc-50">
                 🍚 CBD Caifan &amp; Salad
               </span>
               <span className="hidden text-sm text-zinc-500 sm:inline">
@@ -47,10 +47,7 @@ export default function RootLayout({
             </Link>
           </div>
         </header>
-        <main className="flex flex-1 flex-col">{children}</main>
-        <footer className="border-t border-zinc-200 py-6 text-center text-xs text-zinc-400 dark:border-zinc-800">
-          Built for hunting down the best caifan and salad deals in the CBD.
-        </footer>
+        <main className="flex min-h-0 flex-1 flex-col overflow-y-auto">{children}</main>
       </body>
     </html>
   );
